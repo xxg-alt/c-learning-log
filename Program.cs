@@ -1,83 +1,131 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Devices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Xml.Linq;
 
-namespace ConsoleApp1
+namespace 学习2._0
 {
-    enum E_xin_bie
+    public interface IAudio 
     {
-        man,
-        woman,
+        void Bofang();
     }
-    enum E_zhi_yei
+    public interface IUsb 
     {
-        zhanshi,
-        fashi,
-        lieren,
+        void Open();
+        void Close();
+        void Shuru();
     }
-    internal class Program
+    public class Yp:IUsb 
+    { 
+        public void Open()
+        {
+            Console.WriteLine("硬盘打开");
+        }
+        public void Shuru()
+        {
+            Console.WriteLine("硬盘传输中");
+        }
+        public void Close()
+        {
+            Console.WriteLine("硬盘关闭");
+        }
+    }
+    public class UP : IUsb
+    {
+        public void Open()
+        {
+            Console.WriteLine("U盘打开");
+        }
+        public void Shuru()
+        {
+            Console.WriteLine("U盘传输中");
+        }
+        public void Close()
+        {
+            Console.WriteLine("U盘关闭");
+        }
+    }
+    public class MP3:IUsb,IAudio
+    {
+        public void Open()
+        {
+            Console.WriteLine("MP3打开");
+        }
+        public void Shuru()
+        {
+            Console.WriteLine("MP3传输中");
+        }
+        public void Close()
+        {
+            Console.WriteLine("MP3关闭");
+        }
+        public void Bofang()
+        {
+            Console.WriteLine("MP3播放");
+        }
+    }
+    public class Computer
+    {
+        public void add()
+        {
+            Console.WriteLine("电脑启动");
+        }
+        public void Open(IUsb usb)
+        {
+            usb.Open();
+        }
+        public void Shuru(IUsb usb)
+        {
+            usb.Shuru();
+        }
+        public void Close(IUsb usb)
+        {
+            usb.Close();
+        }
+        public void Bofang(IAudio audio)
+        {
+            audio.Bofang();
+        }
+    }
+    class Program
     {
         static void Main(string[] args)
         {
-            try
-            {
-                Console.WriteLine("输入英雄性别男0，女1");
-                E_xin_bie a =(E_xin_bie)int.Parse(Console.ReadLine());
-                string sex = " ";
-                int atk = 0;
-                int def = 0;
-                switch (a)
-                {
-                    case E_xin_bie.man:
-                        sex = "男";
-                        atk += 50;
-                        def += 100;
-                        break;
-                    case E_xin_bie.woman:
-                        sex = "女";
-                        atk += 150;
-                        def += 20;
-                        break;
-                    default:
-                        break;
-                }
-                Console.WriteLine("输入英雄职业战士0，猎人2，法师1");
-                E_zhi_yei o=(E_zhi_yei)int.Parse(Console.ReadLine());
-                string e=" ";
-                string zhiyei=" ";
-                switch (o)
-                {
-                    case E_zhi_yei.zhanshi:
-                        atk += 20;
-                        def += 100;
-                        e = "冲锋";
-                        zhiyei = "战士";
-                        break;
-                    case E_zhi_yei.fashi:
-                        atk += 200;
-                        def += 10;
-                        e = "奥义冲击";
-                        zhiyei = "法师";
-                        break;
-                    case E_zhi_yei.lieren:
-                        atk += 120;
-                        def += 30;
-                        e = "假死";
-                        zhiyei = "猎人";
-                        break;
-                    default:
-                        break;
-                }
-                Console.WriteLine("你选择了{0}{1}，攻击力为{2},防御力为{3},技能为{4}",sex, zhiyei, atk,def,e);
-            }
-            catch
+            
+            Computer computer = new Computer();
+            computer.Open(new Yp());
+            List<IUsb> usbs = new List<IUsb>();
+            usbs.Add(new Yp());
+            usbs.Add(new UP());
+            usbs.Add(new MP3());
+            IAudio audio = new MP3();
+            computer.add();
+            foreach (var item in usbs)
             {
 
-                Console.WriteLine("输入数字");
-            }
+                if (item != null && item is MP3)
+                {
+                    computer.Open(item);
+                    computer.Shuru(item);
+                    computer.Close(item);
 
+                }
+                else if (item != null && item is UP)
+                {
+
+                }
+            }
+            //computer.Bofang(audio);
+            ////IUsb[] arr =
+            ////{
+            ////    new Yp(),
+            ////    new UP(),
+            ////    new MP3(),
+            ////};
         }
     }
 }
